@@ -11,4 +11,5 @@ declare type Attendance = {
   in: string;
   out: string;
   overtimeMinute: number;
+  isLate: boolean;
 };

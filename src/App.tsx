@@ -1,29 +1,17 @@
+import { useState } from "react";
+import Papa from "papaparse";
+import moment from "moment";
+
 import {
-  Card,
-  CardBody,
-  CardHeader,
   Container,
   Flex,
   Heading,
   Input,
   Stack,
-  Tfoot,
   useColorMode,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import ColorModeSwitcher from "./components/ColorModeSwitcher";
-import Papa from "papaparse";
-import moment from "moment";
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-} from "@chakra-ui/react";
+import ColorModeSwitcher from "./components/ColorModeSwitcher";
 import EmployeeCard from "./components/EmployeeCard";
 
 const LOG_FORMAT = "DD/MM/YYYY HH:mm";
@@ -40,6 +28,18 @@ const calculateDailyOvertime = (log: Log) => {
   const overtime = momentDate.diff(closingTime, "minutes");
 
   return overtime > 0 ? overtime : 0;
+};
+
+const calculateDailyLate = (log: Log) => {
+  const momentDate = moment(log.date, LOG_FORMAT);
+
+  const expectedArriveTime = momentDate
+    .clone()
+    .set({ hour: 8, minute: 10, second: 0 });
+
+  const late = momentDate.diff(expectedArriveTime, "minutes");
+
+  return late > 0;
 };
 
 function App() {
@@ -89,6 +89,7 @@ function App() {
         if (logAcc[date]) {
           if (log.logType === "C/In") {
             logAcc[date].in = time;
+            logAcc[date].isLate = calculateDailyLate(log);
           } else {
             logAcc[date].out = time;
             logAcc[date].overtimeMinute = calculateDailyOvertime(log);
@@ -100,6 +101,7 @@ function App() {
             out: log.logType === "C/Out" ? time : "-",
             overtimeMinute:
               log.logType === "C/Out" ? calculateDailyOvertime(log) : 0,
+            isLate: log.logType === "C/In" && calculateDailyLate(log),
           };
         }
 

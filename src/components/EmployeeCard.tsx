@@ -27,7 +27,7 @@ const EmployeeCard = ({ name, logs }: EmployeeCardProps) => {
   return (
     <Card key={name} variant="outline">
       <CardHeader>
-        <Heading>{name}</Heading>
+        <Heading>{name.replace(".", " ")}</Heading>
       </CardHeader>
       <CardBody>
         <TableContainer>
@@ -46,7 +46,9 @@ const EmployeeCard = ({ name, logs }: EmployeeCardProps) => {
                 <Tr key={date}>
                   <Td>{attendance.dayName}</Td>
                   <Td>{date}</Td>
-                  <Td>{attendance.in || "-"}</Td>
+                  <Td color={attendance.isLate ? "red" : ""}>
+                    {attendance.in || "-"}
+                  </Td>
                   <Td>{attendance.out || "-"}</Td>
                   <Td isNumeric>
                     {(attendance.overtimeMinute / 60).toFixed(1)}
