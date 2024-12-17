@@ -35,7 +35,7 @@ const calculateDailyLate = (log: Log) => {
 
   const expectedArriveTime = momentDate
     .clone()
-    .set({ hour: 8, minute: 10, second: 0 });
+    .set({ hour: 8, minute: 0, second: 0 });
 
   const late = momentDate.diff(expectedArriveTime, "minutes");
 
@@ -78,6 +78,10 @@ function App() {
     return acc;
   }, {} as Record<string, Log[]>);
 
+  // const filteredLogGroupedByName = Object.fromEntries(
+  //   Object.entries(logGroupedByName).filter(([name]) => name.includes("Rahmat"))
+  // );
+
   const employeeLogSummary = Object.entries(logGroupedByName).reduce(
     (attAcc, [name, logs]) => {
       attAcc[name] = logs.reduce((logAcc, log) => {
@@ -113,7 +117,7 @@ function App() {
   );
 
   return (
-    <Container color={colorMode} maxWidth="container.lg">
+    <Container color={colorMode === "light" ? "white" : "black"} maxWidth="container.lg">
       <Flex justify="space-between" paddingBlock="20px">
         <Heading fontSize={"3xl"}>Attendance Summary</Heading>
         <ColorModeSwitcher />
